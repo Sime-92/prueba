@@ -7,4 +7,8 @@ function validarPluses() {
     return true;
 }
 
-alert("Eres un fucking bestia Simeón");
+function actualizarValor(valor) {
+    document.getElementById("valorIRPF").textContent = valor + "%";
+    // Actualizamos el valor del campo oculto
+    document.getElementById("irpf_hidden").value = valor;
+  }

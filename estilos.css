@@ -1,15 +1,90 @@
+/* Estilos Generales */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #eeeeee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
-.nomina-container {
-    margin: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    border: 2px solid #ff0000; /* Borde rojo */
 }
 
-p {
-    font-size: 16px;
+label {
+    display: block;
+    margin-bottom: 10px;
     color: #333;
+    font-size: 18px; /* Fuente más grande y legible */
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 25px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Asegura que el padding no aumente el tamaño del input */
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #d10000; /* Rojo más oscuro para el botón */
+    color: white;
+    font-size: 20px; /* Tamaño de fuente más grande para el botón */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #a80000; /* Rojo aún más oscuro al pasar el mouse */
+    transform: scale(1.05); /* Efecto de crecimiento al pasar el mouse */
+}
+
+/* Animaciones y Transiciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+form {
+    animation: fadeIn 1s ease-out forwards;
+}
+
+/* Mejora visual para los select */
+select {
+    appearance: none; /* Remueve el estilo predeterminado */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048"><path fill="%23d10000" d="M2048 384v128h-2048v-128h2048zm0 512v128h-2048v-128h2048zm0 512v128h-2048v-128h2048z"/></svg>'); /* Flecha personalizada */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+/* Estilos para mejorar la legibilidad y el impacto visual */
+* {
+    box-sizing: border-box;
+}
+
+input[type=number], select, button {
+    cursor: pointer; /* Cambia el cursor a pointer para indicar interactividad */
+}
+
+/* Estilos adicionales para los hover de input y select */
+input[type=number]:hover, select:hover {
+    border-color: #d10000; /* Cambia el color del borde al pasar el mouse */
 }

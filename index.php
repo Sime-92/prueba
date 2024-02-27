@@ -8,9 +8,6 @@
 </head>
 <body>
     <div class="nomina-container">
-
-
-
         <?php
         // Código PHP para conectarte a la base de datos y calcular la nómina
         $servername = "localhost";
@@ -29,84 +26,71 @@
         }
         
 //Crear variables
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['horas'])) {
-
-
     $anioSeleccionado = $_POST['anio'];
     $horasSeleccionadas = $_POST['horas'];
     $trieniosSeleccionados = $_POST['trienios'];
     $pluses = isset($_POST['pluses']) ? $_POST['pluses'] : 0;
     $prorrateadas = $_POST['prorrateadas'] == "si" ? true : false;
 
+    // Recuperar el valor del IRPF seleccionado
+    $irpfSeleccionado = $_POST['irpf_hidden'];
 
-    // Realiza la consulta para obtener los detalles de salario basados en las horas seleccionadas
+    // Realizar la consulta para obtener los detalles de salario basados en las horas seleccionadas
     $sql = "SELECT * FROM Salarios WHERE Horas = $horasSeleccionadas";
     $result = $conn->query($sql);
+    
     if ($result->num_rows > 0) {
         // Obtener los resultados en variables
         $row = $result->fetch_assoc();
         $horas = $row["Horas"];
         $salarioBase = $row["SalarioBase"];
         $plusTransporte = $row["PlusTransporte"];
-        // Omitimos PlusHospital y PlusSanitario por ahora
-        // $plusHospital = $row["PlusHospital"];
-        // $plusSanitario = $row["PlusSanitario"];
-        // Omitimos Festivo por ahora
-        // $festivo = $row["Festivo"];
         $trienio = $row["Trienio"];
         $totalTrienio = $row["Trienio"] * $trieniosSeleccionados;
-    
-        // 
-        // Construye el nombre de la tabla basado en el año seleccionado
-            $tablaSMI = "smi_" . $anioSeleccionado;
 
-            // Prepara la consulta SQL
-$sql = "SELECT * FROM `$tablaSMI` WHERE Horas = $horasSeleccionadas";
+        // Construir el nombre de la tabla basado en el año seleccionado
+        $tablaSMI = "smi_" . $anioSeleccionado;
 
-// Ejecuta la consulta
-$result = $conn->query($sql);
+        // Preparar la consulta SQL
+        $sql = "SELECT * FROM `$tablaSMI` WHERE Horas = $horasSeleccionadas";
 
-// Verifica que se obtuvieron resultados
-if ($result->num_rows > 0) {
-    // Obtiene los datos de la fila
-    $row = $result->fetch_assoc();
-    
-// Determina si se utiliza SMI12Pagas o SMI15Pagas basado en la elección del usuario
-if ($prorrateadas === 'si') {
-    $smiSeleccionado = $row["SMI12Pagas"];
-    $tipoDePagas = "12 pagas (prorrateadas)";
-} else {
-    $smiSeleccionado = $row["SMI15Pagas"];
-    $tipoDePagas = "15 pagas";
-}       
-    
-        // Luego, imprimir los resultados usando las variables
-        echo "<div class='resultado-salario'>";
-        echo "<p>Cálculo de nómina para el año: " . $anioSeleccionado . "</p>";
+        // Ejecutar la consulta
+        $result = $conn->query($sql);
 
-        echo "<p>Horas: " . $horas . "</p>";
-        echo "<p>Salario Base: €" . $salarioBase . "</p>";
-        echo "<p>Plus Transporte: €" . $plusTransporte . "</p>";
-        // Imprimir Plus Hospital, Plus Sanitario, y Festivo si es necesario más adelante
-        echo "<p>Trienio: €" . $trienio . "</p>";
-        echo "<p>Precio Trienios: €" . $totalTrienio. "</p>";
-        echo "<p>Pluses: €" . $pluses. "</p>";
-
-
- // Imprime el SMI seleccionado
- echo "El SMI para una jornada de $horasSeleccionadas horas en el año $anioSeleccionado, con las pagas $tipoDePagas, es: $smiSeleccionado €.";
-} else {
-    echo "No se encontraron datos para la jornada de $horasSeleccionadas horas en el año $anioSeleccionado.";
-}
-
-        echo "</div>";
+        // Verificar que se obtuvieron resultados
+        if ($result->num_rows > 0) {
+            // Obtener los datos de la fila
+            $row = $result->fetch_assoc();
+            
+            // Determinar si se utiliza SMI12Pagas o SMI15Pagas basado en la elección del usuario
+            if ($prorrateadas) {
+                $smiSeleccionado = $row["SMI12Pagas"];
+                $tipoDePagas = "12 pagas (prorrateadas)";
+            } else {
+                $smiSeleccionado = $row["SMI15Pagas"];
+                $tipoDePagas = "15 pagas";
+            }
+            // Imprimir los resultados
+            echo "<div class='resultado-salario'>";
+            echo "<p>Cálculo de nómina para el año: $anioSeleccionado</p>";
+            echo "<p>Horas: $horas</p>";
+            echo "<p>Salario Base: €$salarioBase</p>";
+            echo "<p>Plus Transporte: €$plusTransporte</p>";
+            echo "<p>Trienio: €$trienio</p>";
+            echo "<p>Precio Trienios: €$totalTrienio</p>";
+            echo "<p>Pluses: €$pluses</p>";
+            echo "<p>El IRPF que te quita la empresa es: $irpfSeleccionado%</p>";
+            echo "El SMI para una jornada de $horasSeleccionadas horas en el año $anioSeleccionado, con las pagas $tipoDePagas, es: $smiSeleccionado €.";
+            echo "</div>";
+        } else {
+            echo "No se encontraron datos para la jornada de $horasSeleccionadas horas en el año $anioSeleccionado.";
+        }
     } else {
         echo "<p>No se encontraron resultados para las horas seleccionadas.</p>";
     }
 }
-
-        ?>
+?>
 
 
 
@@ -158,7 +142,14 @@ if ($prorrateadas === 'si') {
     <select name="prorrateadas" id="prorrateadas">
         <option value="no">No</option>
         <option value="si">Sí</option>
-    </select>    
+    </select> 
+    
+    <!--obtener irpf-->
+    <label for="irpf">Seleccione el IRPF que le quita la empresa (%):</label><br>
+  <input type="range" id="irpf" name="irpf" min="0" max="25" value="0" oninput="actualizarValor(this.value)">
+  <span id="valorIRPF">0%</span><br>
+  <!-- Agregamos un campo oculto para enviar el valor seleccionado -->
+  <input type="hidden" id="irpf_hidden" name="irpf_hidden" value="0">
 
 
     <button type="submit">Consultar Salario</button>
@@ -166,5 +157,6 @@ if ($prorrateadas === 'si') {
 
     </div>
     <script src="validarPluses.js"></script>
+
 </body>
 </html>
