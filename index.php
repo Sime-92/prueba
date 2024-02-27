@@ -9,6 +9,7 @@
 <body>
     <div class="nomina-container">
         <?php
+        include_once 'calculoNomina.php';
         // Código PHP para conectarte a la base de datos y calcular la nómina
         $servername = "localhost";
         $username = "root";
@@ -89,6 +90,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['horas'])) {
     } else {
         echo "<p>No se encontraron resultados para las horas seleccionadas.</p>";
     }
+   
+
+    calculoNomina($salarioBase, $plusTransporte, $totalTrienio, $pluses, $irpfSeleccionado, $prorrateadas, $smiSeleccionado);
+
 }
 ?>
 
@@ -126,9 +131,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['horas'])) {
 
     <!--Obtener los trienios--> 
 
-          <label for="trienios">Selecciona los trienios (1-10):</label>
+          <label for="trienios">Selecciona los trienios (0-10):</label>
     <select name="trienios" id="trienios">
-        <?php for($i = 1; $i <= 10; $i++): ?>
+        <?php for($i = 0; $i <= 10; $i++): ?>
             <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
         <?php endfor; ?>
     </select>
